@@ -11,7 +11,8 @@ class App extends Component {
     this.addTodo = this.addTodo.bind(this)
 
     this.state = {
-      todos: []
+      todos: [],
+      todoIn : ''
     }
   }
 
@@ -30,22 +31,23 @@ class App extends Component {
     ev.preventDefault()
     let refRoot = firebase.database().ref('/todo/')
     refRoot.push({ todo: this.refs.todo.value })
+    this.setState({todoIn:''})
   }
 removeTodo(ev){
- console.log('this is ev',ev);
- console.log('this is value',ev.value.todo);
- console.log('this is index',ev.value.id);
+//  console.log('this is ev',ev);
+//  console.log('this is value',ev.value.todo);
+//  console.log('this is index',ev.value.id);
  
  let refRoot = firebase.database().ref(`/todo/${ev.value.id}`);
  refRoot.remove().then((i) => {
   let todos = this.state.todos.slice();
  todos.splice(ev.index,1);
- console.log('this is todos array',todos);
- this.refs.todo.value = '';
- 
+//  console.log('this is todos array',todos);
  this.setState({
-   todos : todos
- })
+   todos : todos,
+  
+ }) ;
+
  })
 //  refRoot.remove();
 
@@ -53,14 +55,14 @@ removeTodo(ev){
  
 }
   render() {
-    console.log(this.state.todos)
+    // console.log(this.state.todos)
     return (
       <div className="App">
         {/*<div className="App-header">*/}
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React Todo</h2>
           <form onSubmit={this.addTodo}>
-            <input type="text" ref="todo" placeholder="Write your todo" />
+            <input type="text" ref="todo" onChange={(e) => {this.setState({todoIn : e.target.value}) }} value={this.state.todoIn}placeholder="Write your todo" />
             <button>Add Todo</button>
           </form>
           {this.state.todos.map((value, index) => {
